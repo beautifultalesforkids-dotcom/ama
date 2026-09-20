@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مغامرة جزء عم السحرية - تطبيق الأطفال التفاعلي</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            min-height: 100vh;
+        }
+        .bouncing {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(234, 179, 8, 0.9); }
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #dbeafe;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-amber-300 selection:text-amber-900">
+
+    <header class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-amber-200">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="switchTab('home')">
+                <div class="w-12 h-12 bg-amber-400 rounded-2xl flex items-center justify-center text-white text-2xl shadow-md bouncing">
+                    <i class="fa-solid fa-quran"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black text-blue-900 tracking-wide">جزء عم للأطفال</h1>
+                    <p class="text-xs text-amber-600 font-bold">رحلة ممتعة في رحاب القرآن الكريم</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-100 border border-amber-300 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-inner">
+                    <i class="fa-solid fa-star text-amber-500 text-lg"></i>
+                    <span id="scoreBadge" class="font-black text-amber-800 text-lg">0</span>
+                    <span class="text-xs text-amber-700 font-bold hidden sm:inline">نقطة</span>
+                </div>
+                <button onclick="resetProgress()" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> إعادة التعيين
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <button onclick="switchTab('home')" id="tab-home" class="tab-btn px-5 py-2.5 rounded-2xl font-bold text-sm bg-white text-blue-900 shadow-md hover:bg-amber-400 hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-house-chimney"></i> الرئيسية
+            </button>
+            <button onclick="switchTab('surahs')" id="tab-surahs" class="tab-btn px-5 py-2.5 rounded-2xl font-bold text-sm bg-white/80 text-blue-900 shadow-md hover:bg-amber-400 hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-book-quran"></i> دليل سور جزء عم (37 سورة)
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-2.5 rounded-2xl font-bold text-sm bg-white/80 text-blue-900 shadow-md hover:bg-amber-400 hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-trophy"></i> تحدي الاختبارات الكبرى
+            </button>
+            <button onclick="switchTab('badges')" id="tab-badges" class="tab-btn px-5 py-2.5 rounded-2xl font-bold text-sm bg-white/80 text-blue-900 shadow-md hover:bg-amber-400 hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-medal"></i> أوسمة الشرف
+            </button>
+        </div>
+
+        <!-- TAB 1: HOME -->
+        <section id="section-home" class="space-y-8">
+            <div class="bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between border-4 border-white/50">
+                <div class="absolute -right-10 -bottom-10 opacity-20 text-9xl">
+                    <i class="fa-solid fa-star-and-crescent"></i>
+                </div>
+                <div class="space-y-4 max-w-xl z-10 text-center md:text-right">
+                    <span class="bg-white/30 text-amber-900 px-4 py-1.5 rounded-full text-xs font-black backdrop-blur-sm">مرحباً بك أيها البطل الصغير!</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-amber-950 leading-tight">اكتشف أسرار ومعاني جزء عم بأسلوب مشوق وممتع</h2>
+                    <p class="text-amber-950/90 font-semibold text-base">استكشف جميع سور جزء عم الـ 37، واختبر معلوماتك في مستويات متعددة، واجمع النقاط والأوسمة الذهبية!</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
+                        <button onclick="switchTab('surahs')" class="bg-blue-900 hover:bg-blue-800 text-white px-6 py-3 rounded-2xl font-black shadow-lg transition flex items-center gap-2 text-base">
+                            <i class="fa-solid fa-book-open-reader"></i> ابدأ تصفح السور
+                        </button>
+                        <button onclick="switchTab('quiz')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-2xl font-black shadow-lg transition flex items-center gap-2 text-base pulse-glow">
+                            <i class="fa-solid fa-gamepad"></i> العب واختبر نفسك الآن
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-6 md:mt-0 z-10">
+                    <div class="w-48 h-48 md:w-60 md:h-60 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-4 border-white shadow-inner bouncing">
+                        <i class="fa-solid fa-graduation-cap text-7xl md:text-8xl text-white drop-shadow-md"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="switchTab('surahs')" class="bg-white rounded-3xl p-6 shadow-xl card-hover cursor-pointer border-b-4 border-blue-500 flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl font-black shadow-inner">
+                        <i class="fa-solid fa-list-ol"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-blue-900">37 سورة مباركة</h3>
+                        <p class="text-slate-500 text-sm font-semibold">من سورة النبأ إلى سورة الناس</p>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('quiz')" class="bg-white rounded-3xl p-6 shadow-xl card-hover cursor-pointer border-b-4 border-amber-500 flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-3xl font-black shadow-inner">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-amber-900">اختبارات متعددة المستويات</h3>
+                        <p class="text-slate-500 text-sm font-semibold">أسئلة تفاعلية شيقة للصغار</p>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('badges')" class="bg-white rounded-3xl p-6 shadow-xl card-hover cursor-pointer border-b-4 border-emerald-500 flex items-center space-x-4 space-x-reverse">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl font-black shadow-inner">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-emerald-900">أوسمة ومكافآت ذهبية</h3>
+                        <p class="text-slate-500 text-sm font-semibold">كن بطل جزء عم وتألق</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SURAHS EXPLORER -->
+        <section id="section-surahs" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-blue-900"><i class="fa-solid fa-book-quran ml-2 text-amber-500"></i>دليل سور جزء عم (37 سورة)</h2>
+                        <p class="text-slate-500 text-sm">اضغط على أي سورة لمعرفة تفسيرها المبسط للأطفال وأبرز فوائدها</p>
+                    </div>
+                    <div class="w-full md:w-72">
+                        <input type="text" id="surahSearch" onkeyup="filterSurahs()" placeholder="ابحث عن اسم السورة..." class="w-full px-4 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-sm font-semibold">
+                    </div>
+                </div>
+                
+                <div id="surahsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- Dynamic Surahs List -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ ARENA -->
+        <section id="section-quiz" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl max-w-3xl mx-auto">
+                <div id="quizMenu" class="space-y-6 text-center">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center text-4xl mx-auto shadow-inner bouncing">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-blue-900">اختر مستوى التحدي</h2>
+                    <p class="text-slate-600 text-sm max-w-md mx-auto">اختر المستوى المناسب لك واختبر معلوماتك الرائعة في سور جزء عم وتفسيرها!</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                        <button onclick="startQuiz(1)" class="bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white p-6 rounded-3xl shadow-lg transition card-hover flex flex-col items-center gap-3 border-b-4 border-emerald-800">
+                            <i class="fa-solid fa-seedling text-3xl"></i>
+                            <span class="text-xl font-black">المستوى 1: البراعم</span>
+                            <span class="text-xs bg-emerald-700/50 px-3 py-1 rounded-full">سهل ومبسط</span>
+                        </button>
+                        <button onclick="startQuiz(2)" class="bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white p-6 rounded-3xl shadow-lg transition card-hover flex flex-col items-center gap-3 border-b-4 border-amber-800">
+                            <i class="fa-solid fa-shield-halved text-3xl"></i>
+                            <span class="text-xl font-black">المستوى 2: الفرسان</span>
+                            <span class="text-xs bg-amber-700/50 px-3 py-1 rounded-full">متوسط وتحدي</span>
+                        </button>
+                        <button onclick="startQuiz(3)" class="bg-gradient-to-b from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white p-6 rounded-3xl shadow-lg transition card-hover flex flex-col items-center gap-3 border-b-4 border-rose-900">
+                            <i class="fa-solid fa-crown text-3xl"></i>
+                            <span class="text-xl font-black">المستوى 3: العباقرة</span>
+                            <span class="text-xs bg-rose-800/50 px-3 py-1 rounded-full">متقدم وشاق</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quizGameArea" class="hidden space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <span id="quizLevelTitle" class="text-sm font-black bg-blue-100 text-blue-800 px-4 py-1.5 rounded-full">المستوى 1</span>
+                        <div class="text-sm font-bold text-slate-500">السؤال <span id="currentQuestionNum">1</span> من <span id="totalQuestionsNum">10</span></div>
+                    </div>
+
+                    <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-6">
+                        <h3 id="questionText" class="text-xl md:text-2xl font-black text-blue-950 leading-relaxed text-center">نص السؤال هنا...</h3>
+                    </div>
+
+                    <div id="optionsContainer" class="grid grid-cols-1 gap-3">
+                        <!-- Options -->
+                    </div>
+
+                    <div id="feedbackContainer" class="hidden p-4 rounded-2xl text-center font-bold text-base transition"></div>
+
+                    <div class="flex justify-end pt-2">
+                        <button id="nextQuestionBtn" onclick="nextQuestion()" class="hidden bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black shadow-lg transition flex items-center gap-2">
+                            السؤال التالي <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quizResults" class="hidden text-center space-y-6 py-6">
+                    <div class="w-24 h-24 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner bouncing">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-blue-900">أحسنت يا بطل! أنهيت التحدي بنجاح</h2>
+                    <p class="text-slate-600 font-semibold text-lg">لقد جمعت <span id="finalScore" class="text-amber-600 font-black text-2xl">0</span> نقطة في هذا الاختبار.</p>
+                    <div class="flex justify-center gap-4 pt-4">
+                        <button onclick="restartQuiz()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-2xl font-black shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> إعادة الاختبار
+                        </button>
+                        <button onclick="switchTab('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-3 rounded-2xl font-black transition flex items-center gap-2">
+                            <i class="fa-solid fa-house"></i> الرئيسية
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: BADGES & REWARDS -->
+        <section id="section-badges" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl max-w-4xl mx-auto">
+                <div class="text-center space-y-3 mb-8">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center text-3xl mx-auto shadow-inner bouncing">
+                        <i class="fa-solid fa-medal"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-blue-900">أوسمة الشرف والمكافآت</h2>
+                    <p class="text-slate-500 text-sm">كلما جمعت نقاطاً أكثر، كلما فتحت أوسمة جديدة وأصبحت بطلاً مميزاً لجزء عم!</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div id="badge-1" class="border-2 border-slate-200 bg-slate-50 rounded-3xl p-6 text-center space-y-3 transition">
+                        <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-700">مبتدئ جزء عم</h3>
+                        <p class="text-xs text-slate-500 font-semibold">اجمع 50 نقطة لفتح هذا الوسام</p>
+                    </div>
+
+                    <div id="badge-2" class="border-2 border-slate-200 bg-slate-50 rounded-3xl p-6 text-center space-y-3 transition">
+                        <div class="w-20 h-20 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-700">حافظ السور القصيرة</h3>
+                        <p class="text-xs text-slate-500 font-semibold">اجمع 150 نقطة لفتح هذا الوسام</p>
+                    </div>
+
+                    <div id="badge-3" class="border-2 border-slate-200 bg-slate-50 rounded-3xl p-6 text-center space-y-3 transition">
+                        <div class="w-20 h-20 bg-purple-100 text-purple-500 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <h3 class="font-black text-lg text-slate-700">بطل جزء عم العبقري</h3>
+                        <p class="text-xs text-slate-500 font-semibold">اجمع 300 نقطة لفتح هذا الوسام</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Surah Details Modal with External Tafseer Link -->
+    <div id="surahModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl space-y-4 relative animate-scale">
+            <button onclick="closeSurahModal()" class="absolute top-4 left-4 w-10 h-10 bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <span id="modalSurahNum" class="text-xs font-black bg-amber-100 text-amber-800 px-3 py-1 rounded-full">سورة رقم</span>
+                <h3 id="modalSurahTitle" class="text-2xl font-black text-blue-900">اسم السورة</h3>
+                <p id="modalSurahType" class="text-xs text-slate-500 font-semibold">مكية / مدنية - عدد الآيات</p>
+            </div>
+            <div class="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-2">
+                <h4 class="font-black text-amber-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i> التفسير المبسط للأطفال:
+                </h4>
+                <p id="modalSurahTafseer" class="text-slate-700 text-sm leading-relaxed font-semibold">شرح السورة...</p>
+            </div>
+            
+            <!-- External Link Button -->
+            <a id="modalSurahLink" href="#" target="_blank" class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-2xl font-black shadow-lg transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-external-link-alt ml-1"></i> اقرأ التفسير المبسط الكامل
+            </a>
+
+            <button onclick="closeSurahModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 rounded-2xl font-black transition">
+                إغلاق
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // All 37 Surahs of Juz Amma with their specific Tafseer links
+        const surahsData = [
+            { id: 78, name: "سورة النبأ", type: "مكية", ayahs: 40, tafseer: "تتحدث عن البعث والنشور وقدرة الله العظيمة في خلق السماوات والأرض والنجوم، وجزاء المؤمنين والمكذبين.", url: "https://www.story2kids.com/2021/05/blog-post_97.html" },
+            { id: 79, name: "سورة النازعات", type: "مكية", ayahs: 46, tafseer: "تقسم بالملائكة التي تقبض أرواح الكفار بنشاط والملائكة السابحات في الفضاء، وتذكر قصة موسى عليه السلام مع فرعون.", url: "https://www.story2kids.com/2021/05/blog-post_71.html" },
+            { id: 80, name: "سورة عبس", type: "مكية", ayahs: 42, tafseer: "عتاب لطيف من الله لنبيه صلى الله عليه وسلم لأنه عبس وتوجّه بوجهه عن الأعمى ابن أم مكتوم الذي جاء يطلب الهداية.", url: "https://www.story2kids.com/2021/05/blog-post_54.html" },
+            { id: 81, name: "سورة التكوير", type: "مكية", ayahs: 29, tafseer: "تصور أهوال يوم القيامة حين تتكور الشمس وتنتثر النجوم وتطمس، وتؤكد صدق القرآن الكريم.", url: "https://www.story2kids.com/2021/05/blog-post_27.html" },
+            { id: 82, name: "سورة الانفطار", type: "مكية", ayahs: 19, tafseer: "تصف علامات يوم القيامة بانفطار السماء وتطاير الكواكب، وتحذر الإنسان من غروره بالله الكريم.", url: "https://www.story2kids.com/2021/05/blog-post_28.html" },
+            { id: 83, name: "سورة المطففين", type: "مكية", ayahs: 36, tafseer: "تحذر بشدة من الغش في الكيل والميزان (المطففين)، وتبين مصير الفجار ومصير الأبرار في جنات النعيم.", url: "https://www.story2kids.com/2021/05/blog-post_80.html" },
+            { id: 84, name: "سورة الانشقاق", type: "مكية", ayahs: 25, tafseer: "تصف انشقاق السماء يوم القيامة واستماعها لأمر ربها، وأن الإنسان كادح إلى ربه كدحاً فملاقيه.", url: "https://www.story2kids.com/2021/05/blog-post_29.html" },
+            { id: 85, name: "سورة البروج", type: "مكية", ayahs: 22, tafseer: "تحكي قصة أصحاب الأخدود المؤمنين الذين حُفرت لهم الأخدود وأُوقِرت بالنار لثباتهم على الإيمان.", url: "https://www.story2kids.com/2021/05/blog-post_30.html" },
+            { id: 86, name: "سورة الطارق", type: "مكية", ayahs: 17, tafseer: "تقسم بالسماء والطارق (النجم الثاقب) وتؤكد أن لكل نفس حافظاً من الملائكة يكتب أعمالها.", url: "https://www.story2kids.com/2021/05/blog-post.html" },
+            { id: 87, name: "سورة الأعلى", type: "مكية", ayahs: 19, tafseer: "تدعو لتسبيح اسم الله الأعلى الذي خلى فسوى والذي أخرج المرعى فجعله غثاء أحوى.", url: "https://www.story2kids.com/2021/06/blog-post_17.html" },
+            { id: 88, name: "سورة الغاشية", type: "مكية", ayahs: 26, tafseer: "تصف يوم القيامة بالغاشية التي تغش الناس بأهوالها، وتبين حال وجوه الخاشعة وحال وجوه الناعمة.", url: "https://www.story2kids.com/2021/06/blog-post_89.html" },
+            { id: 89, name: "سورة الفجر", type: "مكية", ayahs: 30, tafseer: "تقسم بالفجر وليال عشر، وتضرب أمثلة للأمم السابقة الطاغية مثل عاد وثمود وفرعون وكيف عاقبهم الله.", url: "https://www.story2kids.com/2021/06/blog-post_2.html" },
+            { id: 90, name: "سورة البلد", type: "مكية", ayahs: 20, tafseer: "تتحدث عن مكة المكرمة، وأن الإنسان خلق في كبد، وتدعو لفك الرقبة وإطعام اليطيم والمحتاج.", url: "https://www.story2kids.com/2021/06/blog-post_77.html" },
+            { id: 91, name: "سورة الشمس", type: "مكية", ayahs: 15, tafseer: "تقسم بالشمس وضاحاها وبقمرها وليلها ونهارها، وتذكر قصة ثمود وعقرهم الناقة وعاقبتهم.", url: "https://www.story2kids.com/2021/06/blog-post_50.html" },
+            { id: 92, name: "سورة الليل", type: "مكية", ayahs: 21, tafseer: "توضح اختلاف سعي الناس بين من أعطى واتقى وصدق بالحسنى، ومن بخل واستغنى وكذب بالحسنى.", url: "https://www.story2kids.com/2021/06/blog-post_44.html" },
+            { id: 93, name: "سورة الضحى", type: "مكية", ayahs: 11, tafseer: "تطمئن النبي صلى الله عليه وسلم بأن الله لم يودعه ولم يقله، وتذكره بنعمه السابقة عليه في يتيمته وضلاله.", url: "https://www.story2kids.com/2021/06/blog-post_4.html" },
+            { id: 94, name: "سورة الشرح", type: "مكية", ayahs: 8, tafseer: "تعداد لنعم الله على نبيه بشرح صدره ووضع وزره عنه، وأن مع العسر يسراً إن مع العسر يسراً.", url: "https://www.story2kids.com/2021/06/blog-post_5.html" },
+            { id: 95, name: "سورة التين", type: "مكية", ayahs: 8, tafseer: "تقسم بالتين والزيتون طور سيناء وهذا البلد الأمين، بأن الله خلق الإنسان في أحسن تقويم.", url: "https://www.story2kids.com/2021/06/blog-post_6.html" },
+            { id: 96, name: "سورة العلق", type: "مكية", ayahs: 19, tafseer: "أول ما نزل من القرآن الكريم على النبي في غار حرا (اقرأ باسم ربك الذي خلق)، وتنهى عن طغيان الإنسان.", url: "https://www.story2kids.com/2021/06/blog-post_7.html" },
+            { id: 97, name: "سورة القدر", type: "مكية", ayahs: 5, tafseer: "تتحدث عن ليلة القدر التي هي خير من ألف شهر، وحلول الملائكة والروح فيها بإذن ربهم.", url: "https://www.story2kids.com/2021/06/blog-post_49.html" },
+            { id: 98, name: "سورة البينة", type: "مدنية", ayahs: 8, tafseer: "تبين أن أهل الكتاب والمشركين لم يكونوا منفكين حتى تأتيهم البينة (رسول من الله يتلوا صحفاً مطهرة).", url: "https://www.story2kids.com/2021/06/blog-post_8.html" },
+            { id: 99, name: "سورة الزلزلة", type: "مدنية", ayahs: 8, tafseer: "تصف زلزال يوم القيامة العظيم حين تخرج الأرض أثقالها، وأن من يعمل مثقال ذر خيراً يره ومن يعمل مثقال ذر شراً يره.", url: "https://www.story2kids.com/2021/06/blog-post_12.html" },
+            { id: 100, name: "سورة العاديات", type: "مكية", ayahs: 11, tafseer: "تقسم بالخيل المجاهدة التي تعدو وتجري بسرعة، وتذكر جحود الإنسان لنعم ربه وحبه الشديد للمال.", url: "https://www.story2kids.com/2021/06/blog-post_13.html" },
+            { id: 101, name: "سورة القارعة", type: "مكية", ayahs: 11, tafseer: "تصف يوم القيامة بالقارعة التي تقرع القلوب بأهوالها، وتيزن الموازين فمن ثقلت موازينه فهو في عيشة راضية.", url: "https://www.story2kids.com/2021/06/blog-post_87.html" },
+            { id: 102, name: "سورة التكاثر", type: "مكية", ayahs: 8, tafseer: "تحذر من التفاخر والانهماك في جمع الأموال والأولاد عن طاعة الله حتى يزور الإنسان المقابر.", url: "https://www.story2kids.com/2021/06/blog-post_59.html" },
+            { id: 103, name: "سورة العصر", type: "مكية", ayahs: 3, tafseer: "تقسم بالزمن أن جميع الناس في خسران إلا الذين آمنوا وعملوا الصالحات وتواصوا بالحق وتواصوا بالصبر.", url: "https://www.story2kids.com/2021/06/blog-post_21.html" },
+            { id: 104, name: "سورة الهمزة", type: "مكية", ayahs: 9, tafseer: "تتوعد بالويل العذاب الشديد لكل مغتاب يعيب الناس ويجمع المال ويحسب أن ماله أخلده.", url: "https://www.story2kids.com/2021/06/blog-post_35.html" },
+            { id: 105, name: "سورة الفيل", type: "مكية", ayahs: 5, tafseer: "تحكي قصة أصحاب الفيل وجيش أبرهة الأشرم الذي حاول هدم الكعبة، وكيف أرسل الله عليهم طايراً أبابيل.", url: "https://www.story2kids.com/2021/06/blog-post_23.html" },
+            { id: 106, name: "سورة قريش", type: "مكية", ayahs: 4, tafseer: "تذكر نعم الله على قبيلة قريش بإيلافهم رحلة الشتاء والصيف، وتدعوهم لشكره وعبادة رب هذا البيت.", url: "https://www.story2kids.com/2021/06/blog-post_24.html" },
+            { id: 107, name: "سورة الماعون", type: "مكية", ayahs: 7, tafseer: "تصف صفات المكذبين بالدين الذين ينهزون اليتيم ولا يحضون على طعام المسكين وهم ساهون عن صلاتهم.", url: "https://www.story2kids.com/2021/06/blog-post.html" },
+            { id: 108, name: "سورة الكوثر", type: "مكية", ayahs: 3, tafseer: "تعداد لفضل الله على نبيه بإعطائه نهر الكوثر في الجنة، وأمر بالصلاة لله والذبح، وأن شانئه هو الأبتر.", url: "https://www.story2kids.com/2021/07/blog-post_58.html" },
+            { id: 109, name: "سورة الكافرون", type: "مكية", ayahs: 6, tafseer: "إعلان البراءة الكاملة من عبادة المشركين وأن نبينا يعبد الله وحده لا شريك له (لكم دينكم ولي دين).", url: "https://www.story2kids.com/2021/07/blog-post_64.html" },
+            { id: 110, name: "سورة النصر", type: "مدنية", ayahs: 3, tafseer: "تبشر بنصر الله والفتح ودخول الناس في دين الله أفواجاً، وتأمر بالتسبيح والاستغفار.", url: "https://www.story2kids.com/2021/07/blog-post_23.html" },
+            { id: 111, name: "سورة المسد", type: "مكية", ayahs: 5, tafseer: "تتحدث عن أبي لهب وزوجته التي كانت تحط الحطب، وتبوء أيديهما بالخسران والتباب في نار ذات لهب.", url: "https://www.story2kids.com/2021/07/blog-post_67.html" },
+            { id: 112, name: "سورة الإخلاص", type: "مكية", ayahs: 4, tafseer: "تؤكد وحدانية الله عز وجل، وأنه الصمد الأحد الذي لم يلد ولم يولد ولم يكن له كفواً أحد.", url: "https://www.story2kids.com/2021/07/blog-post_26.html" },
+            { id: 113, name: "سورة الفلق", type: "مكية", ayahs: 5, tafseer: "الاستعاذة بالله رب الفلق من شر ما خلق، ومن شر غاسق إذا وقب، ومن شر النفاثات في العقد ومن شر حاسد إذا حسد.", url: "https://www.story2kids.com/2021/07/blog-post_2.html" },
+            { id: 114, name: "سورة الناس", type: "مكية", ayahs: 6, tafseer: "الاستعاذة برب الناس ملك الناس إله الناس من شر الوسواس الخناس الذي يوسوس في صدور الناس من الجنة والناس.", url: "https://www.story2kids.com/2021/07/blog-post_77.html" }
+        ];
+
+        let score = parseInt(localStorage.getItem('juzAmmaScore')) || 0;
+        document.getElementById('scoreBadge').innerText = score;
+
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playCorrectSound() {
+            try {
+                initAudio();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } catch(e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function playIncorrectSound() {
+            try {
+                initAudio();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.setValueAtTime(110, now + 0.15);
+                
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } catch(e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        // Render Surahs Grid
+        function renderSurahs(filter = '') {
+            const grid = document.getElementById('surahsGrid');
+            grid.innerHTML = '';
+            const filtered = surahsData.filter(s => s.name.includes(filter) || s.id.toString().includes(filter));
+            
+            filtered.forEach(s => {
+                const card = document.createElement('div');
+                card.className = "bg-gradient-to-br from-blue-50 to-indigo-50/50 border-2 border-blue-100 hover:border-amber-400 rounded-3xl p-5 shadow-md card-hover cursor-pointer flex flex-col justify-between space-y-3";
+                card.onclick = () => openSurahModal(s.id);
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-black bg-amber-400 text-amber-950 px-3 py-1 rounded-full shadow-sm">${s.id}</span>
+                        <span class="text-xs font-bold text-slate-500">${s.type}</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-blue-900">${s.name}</h3>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">عدد الآيات: ${s.ayahs}</p>
+                    </div>
+                    <div class="text-xs text-blue-600 font-bold flex items-center gap-1 pt-2 border-t border-blue-100">
+                        <i class="fa-solid fa-book-open"></i> اقرأ التفسير المبسط
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterSurahs() {
+            const query = document.getElementById('surahSearch').value;
+            renderSurahs(query);
+        }
+
+        // Modal Controls
+        function openSurahModal(surahId) {
+            const s = surahsData.find(item => item.id === surahId);
+            if (!s) return;
+            document.getElementById('modalSurahNum').innerText = `سورة رقم ${s.id}`;
+            document.getElementById('modalSurahTitle').innerText = s.name;
+            document.getElementById('modalSurahType').innerText = `${s.type} - عدد الآيات: ${s.ayahs}`;
+            document.getElementById('modalSurahTafseer').innerText = s.tafseer;
+            document.getElementById('modalSurahLink').href = s.url;
+            document.getElementById('surahModal').classList.remove('hidden');
+        }
+
+        function closeSurahModal() {
+            document.getElementById('surahModal').classList.add('hidden');
+        }
+
+        // Tabs Navigation
+        function switchTab(tabName) {
+            ['home', 'surahs', 'quiz', 'badges'].forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}`);
+                if (btn) {
+                    btn.classList.remove('bg-white', 'text-blue-900', 'shadow-md');
+                    btn.classList.add('bg-white/80', 'text-blue-900');
+                }
+            });
+
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white/80');
+                activeBtn.classList.add('bg-white', 'text-blue-900', 'shadow-md');
+            }
+            if (tabName === 'surahs') {
+                renderSurahs();
+            }
+            if (tabName === 'badges') {
+                updateBadgesDisplay();
+            }
+        }
+
+        // Quiz Logic
+        const quizQuestions = {
+            1: [
+                { q: "ما هي أول سورة في جزء عم؟", options: ["سورة النبأ", "سورة الناس", "سورة الفاتحة"], answer: 0 },
+                { q: "ما معنى 'عبس' في سورة عبس؟", options: ["ضحك بشدة", "قطّب وجهه وتغيّر لونه كراهيةً", "نام"], answer: 1 },
+                { q: "كم عدد آيات سورة الإخلاص؟", options: ["4 آيات", "10 آيات", "3 آيات"], answer: 0 },
+                { q: "في أي سورة ذُكرت قصة أصحاب الفيل؟", options: ["سورة قريش", "سورة الفيل", "سورة الكوثر"], answer: 1 },
+                { q: "ما معنى 'القارعة'؟", options: ["يوم القيامة التي تقرع القلوب بأهوالها", "السماء الصافية", "المطر الشديد"], answer: 0 }
+            ],
+            2: [
+                { q: "ما معنى قوله تعالى: (إِنَّ الإِنسَانَ لِرَبِّهِ لَكَنُودٌ) في سورة العاديات؟", options: ["شكور لنعم ربه", "جاحد لنعم ربه شديد الكفران", "محب للخير دائماً"], answer: 1 },
+                { q: "ما هو 'الطارق' المذكور في سورة الطارق؟", options: ["النجم الثاقب المضيء", "الريح القوية", "المطر الساقط"], answer: 0 },
+                { q: "ما معنى 'ألهاكم التكاثر' في سورة التكاثر؟", options: ["شغلكم التفاخر بالأموال والأولاد عن طاعة الله", "ساعدكم على الصلاة", "أنساكم النوم"], answer: 0 },
+                { q: "ما هي السورة التي تعدل ثلث القرآن الكريم؟", options: ["سورة الناس", "سورة الإخلاص", "سورة الفلق"], answer: 1 },
+                { q: "ما هو جزاء من عمل مثقال ذرة خيراً في سورة الزلزلة؟", options: ["يره", "ينساه", "يضيعه"], answer: 0 }
+            ],
+            3: [
+                { q: "في سورة الأعلى، ماذا يفعل الإنسان بالمقارنة بين الدنيا والآخرة؟", options: ["يؤثرون الحياة الدنيا والآخرة خير وأبقى", "يفضلون الدنيا وينسونها تماماً", "يختارون الآخرة فقط"], answer: 0 },
+                { q: "ما معنى 'عَسْعَسَ' في وصف الليل في سورة التكوير؟", options: ["أقبل بظلامه أو أدبر", "سطعت شمسه", "مطر بغزارة"], answer: 0 },
+                { q: "في سورة البروج، من هم أصحاب الأخدود؟", options: ["المؤمنون الذين حفرت لهم الأخدود وأوقدت نار لثباتهم", "القوم الذين كذبوا نوحاً", "قوم فرعون"], answer: 0 },
+                { q: "ما المقصود بـ 'الشفع والوتر' في سورة الفجر؟", options: ["الشفع يوم النحر والوتر يوم عرفة", "الليل والنهار", "الشمش والقمر"], answer: 0 },
+                { q: "ما هي السورة التي أولها (ألم تر كيف فعل ربك بأصحاب الفيل)؟", options: ["سورة الفيل", "سورة قريش", "سورة الهمزة"], answer: 0 }
+            ]
+        };
+
+        let currentLevel = 1;
+        let currentQIndex = 0;
+        let currentScore = 0;
+        let activeQuestions = [];
+
+        function startQuiz(level) {
+            currentLevel = level;
+            currentQIndex = 0;
+            currentScore = 0;
+            activeQuestions = quizQuestions[level];
+            document.getElementById('quizMenu').classList.add('hidden');
+            document.getElementById('quizGameArea').classList.remove('hidden');
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizLevelTitle').innerText = `المستوى ${level}`;
+            document.getElementById('totalQuestionsNum').innerText = activeQuestions.length;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qObj = activeQuestions[currentQIndex];
+            document.getElementById('currentQuestionNum').innerText = currentQIndex + 1;
+            document.getElementById('questionText').innerText = qObj.q;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            qObj.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-4 rounded-2xl border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 font-bold text-slate-700 transition flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span> <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 font-black">${idx + 1}</span>`;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('feedbackContainer').classList.add('hidden');
+            document.getElementById('nextQuestionBtn').classList.add('hidden');
+        }
+
+        function selectOption(selectedIdx, btnElement) {
+            const qObj = activeQuestions[currentQIndex];
+            const options = document.getElementById('optionsContainer').children;
+            
+            for(let i=0; i<options.length; i++) {
+                options[i].disabled = true;
+                if(i === qObj.answer) {
+                    options[i].classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                }
+            }
+
+            const feedback = document.getElementById('feedbackContainer');
+            feedback.classList.remove('hidden');
+
+            if(selectedIdx === qObj.answer) {
+                playCorrectSound();
+                currentScore += 10;
+                feedback.className = "p-4 rounded-2xl text-center font-bold text-base bg-emerald-100 text-emerald-800";
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check ml-2"></i> إجابة صحيحة! أحسنت يا بطل!';
+            } else {
+                playIncorrectSound();
+                btnElement.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+                feedback.className = "p-4 rounded-2xl text-center font-bold text-base bg-rose-100 text-rose-800";
+                feedback.innerHTML = '<i class="fa-solid fa-circle-xmark ml-2"></i> إجابة خاطئة، الإجابة الصحيحة موضحة بالأخضر.';
+            }
+
+            document.getElementById('nextQuestionBtn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if(currentQIndex < activeQuestions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizGameArea').classList.add('hidden');
+            document.getElementById('quizResults').classList.remove('hidden');
+            document.getElementById('finalScore').innerText = currentScore;
+            
+            score += currentScore;
+            localStorage.setItem('juzAmmaScore', score);
+            document.getElementById('scoreBadge').innerText = score;
+        }
+
+        function restartQuiz() {
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizMenu').classList.remove('hidden');
+        }
+
+        function updateBadgesDisplay() {
+            if(score >= 50) {
+                const b1 = document.getElementById('badge-1');
+                b1.className = "border-2 border-amber-400 bg-amber-50 rounded-3xl p-6 text-center space-y-3 shadow-lg";
+                b1.querySelector('h3').className = "font-black text-lg text-amber-900";
+            }
+            if(score >= 150) {
+                const b2 = document.getElementById('badge-2');
+                b2.className = "border-2 border-blue-400 bg-blue-50 rounded-3xl p-6 text-center space-y-3 shadow-lg";
+                b2.querySelector('h3').className = "font-black text-lg text-blue-900";
+            }
+            if(score >= 300) {
+                const b3 = document.getElementById('badge-3');
+                b3.className = "border-2 border-purple-400 bg-purple-50 rounded-3xl p-6 text-center space-y-3 shadow-lg";
+                b3.querySelector('h3').className = "font-black text-lg text-purple-900";
+            }
+        }
+
+        function resetProgress() {
+            if(confirm("هل أنت متأكد من رغبتك في إعادة تعيين النقاط؟")) {
+                localStorage.removeItem('juzAmmaScore');
+                score = 0;
+                document.getElementById('scoreBadge').innerText = score;
+                alert("تمت إعادة التعيين بنجاح!");
+            }
+        }
+
+        window.onload = function() {
+            renderSurahs();
+        }
+    </script>
+</body>
+</html>
